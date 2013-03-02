@@ -1,0 +1,85 @@
+#             TabConfig            #
+#       Simple config based        #
+#      custom tab list for the     #
+#              TabAPI              #
+#                                  #
+#          Double0negative         #
+#         http://mc-sg.org         #
+
+
+#Do we want to update the tab list for everyone
+#on login and logout? On large servers with constant
+#logins and logouts this can cause high datausage and
+#cpu load.
+
+updateAllOnPlayerLogin: true
+updateAllOnPlayerLogout: true
+
+#Change the update time in ticks. Higher update times 
+#will result in more data usage. Setting this to -1
+#will disable continous updates. 
+
+updateTimer: 100
+
+
+#Set the global tab
+#format
+#
+#
+#row1:
+# - column1
+# - column2
+# - column3
+#row2:
+# - column1
+# - column2
+# - column3
+#
+#
+# Variables: 
+# {online}      = players online
+# {max}         = max players online
+# {player}      = player name
+# {displayname} = player display name (what shows up in chat)
+# {tabname}     = player tab name (what normally shows up in the tab)
+# {servername}  = Server name
+#
+# {fillplayers} = auto fill the reset of the tab with the online player list
+#
+# {ping!serverip.com!online} = Pings an external server for online players
+# {ping!serverip.com!max}    = Pings an external server for max players
+#
+# NOTES: Max char lenght per slot is 16 characters. no two tabs can be identical.
+#        If your tab is 14 char or less long a unique char sequence will be added 
+#        to the end of the tab making it unique.  
+#
+#
+#
+
+
+tab:
+  1:
+  - '&4============'
+  - '&6============'
+  - '&4============'
+  2:
+  - 'Double0negative'
+  - '&4TabConfig'
+  - 'mc-sg.org'
+  3:
+  - '&4============'
+  - '&6============'
+  - '&4============'
+  4:
+  5:
+  - 'play.mc-sg.org'
+  - '{ping!play.mc-sg.org!online}/{ping!play.mc-sg.org!max}'
+  6:
+  - '&6Online: '
+  - '{online}/{max}'
+  7:
+  8:
+  9:
+  - '&4Players'
+  - '{fillplayers}'
+  
