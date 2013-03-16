@@ -48,10 +48,16 @@ updateTimer: 100
 #
 # {ping!serverip.com!online} = Pings an external server for online players
 # {ping!serverip.com!max}    = Pings an external server for max players
+# {udpping!serverip.com!online} = Pings an external server query.port for online players
+# {udpping!serverip.com!max} = Pings an external server query.port for max players
 #
 # NOTES: Max char lenght per slot is 16 characters. no two tabs can be identical.
 #        If your tab is 14 char or less long a unique char sequence will be added 
-#        to the end of the tab making it unique.  
+#        to the end of the tab making it unique.
+#
+#        UDP Ping works best for querying localhost.  You have to enable UDP in server.properties
+#        enable-query=true
+#        query.port=25567
 #
 #
 #
