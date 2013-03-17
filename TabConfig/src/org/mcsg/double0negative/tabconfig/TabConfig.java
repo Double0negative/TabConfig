@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.mcsg.double0negative.tabapi.TabAPI;
 
 public class TabConfig extends JavaPlugin implements Listener, CommandExecutor {
@@ -30,9 +31,10 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor {
     private boolean updateAllOnPlayerLogin = false;;
     private boolean updateAllOnPlayerLogout = false;
     private int updateTimer = -1;
+    private int updateTimerTask = 0;
+    private BukkitTask pingTimerTask;
 
     private final HashMap<String, int[]> ping = new HashMap<String, int[]>();
-    private final HashMap<String, int[]> udpping = new HashMap<String, int[]>();
 
     private void fillPlayers(Player p, int a, int b) {
 	for (Player pl : Bukkit.getOnlinePlayers()) {
@@ -75,15 +77,7 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor {
 		    c = v;
 
 		}
-		while ((c = s.indexOf("{udpping", c)) != -1) {
-		    int v = s.indexOf("}", c);
-		    String t = s.substring(c, v);
-		    String[] spl = t.split("!");
-		    udpping.put(spl[1], new int[2]);
 
-		    c = v;
-
-		}
 		tab[a][b] = s;
 		b++;
 
@@ -94,8 +88,8 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor {
 	}
 
 	if (ping.size() > 0) {
-	    Bukkit.getScheduler().runTaskTimerAsynchronously(this,
-		    new Runnable() {
+	    pingTimerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(
+		    this, new Runnable() {
 			public void run() {
 			    for (String s : ping.keySet()) {
 				String full = (s.contains(":")) ? s : s
@@ -105,24 +99,6 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor {
 				ping.put(
 					s,
 					Pinger.ping(ip[0],
-						Integer.parseInt(ip[1])));
-
-			    }
-			}
-		    }, 100, 100);
-	}
-	if (udpping.size() > 0) {
-	    Bukkit.getScheduler().runTaskTimerAsynchronously(this,
-		    new Runnable() {
-			public void run() {
-			    for (String s : udpping.keySet()) {
-				String full = (s.contains(":")) ? s : s
-					+ ":25565";
-				String[] ip = full.split(":");
-
-				udpping.put(
-					s,
-					Pinger.udpping(ip[0],
 						Integer.parseInt(ip[1])));
 
 			    }
@@ -192,6 +168,16 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor {
 
     }
 
+    public void onDisable() {
+
+	if (updateTimerTask > 0) {
+	    Bukkit.getScheduler().cancelTask(updateTimerTask);
+	}
+
+	pingTimerTask.cancel();
+
+    }
+
     public void onEnable() {
 
 	File y = this.getDataFolder();
@@ -219,8 +205,8 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor {
 	System.out.println("[TabConfig] Loaded!");
 
 	if (updateTimer != -1) {
-	    Bukkit.getScheduler().scheduleSyncRepeatingTask(this,
-		    new Runnable() {
+	    updateTimerTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+		    this, new Runnable() {
 			public void run() {
 			    updateAll();
 			}
@@ -276,23 +262,6 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor {
 	    }
 	    if (spl[2].equalsIgnoreCase("max")) {
 		sy = ping.get(spl[1])[1] + "";
-	    }
-	    // System.out.println(c+"  "+v + "   "+r.length() + "  "+r);
-	    r = r.substring(0, c) + sy + r.substring(v + 1);
-
-	    c = c + sy.length();
-
-	}
-	while ((c = r.indexOf("{udpping", c)) != -1) {
-	    int v = r.indexOf("}", c);
-	    String t = r.substring(c, v);
-	    String[] spl = t.split("!");
-	    String sy = "";
-	    if (spl[2].equalsIgnoreCase("online")) {
-		sy = udpping.get(spl[1])[0] + "";
-	    }
-	    if (spl[2].equalsIgnoreCase("max")) {
-		sy = udpping.get(spl[1])[1] + "";
 	    }
 	    // System.out.println(c+"  "+v + "   "+r.length() + "  "+r);
 	    r = r.substring(0, c) + sy + r.substring(v + 1);

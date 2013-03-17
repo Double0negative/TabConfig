@@ -1,73 +1,33 @@
 package org.mcsg.double0negative.tabconfig;
 
-import java.io.DataInputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.Date;
-
-import me.rmmccann.query.MCQuery;
-import me.rmmccann.query.QueryResponse;
-
 public class Pinger {
 
-    @SuppressWarnings("deprecation")
     public static int[] ping(String ip, int port) {
 
 	try {
 
-	    Socket sk = new Socket(ip, port);
+	    int playerCount = -1;
+	    int maxCount = -1;
 
-	    OutputStream out = sk.getOutputStream();
+	    MC14Fetch serverPing = new MC14Fetch();
 
-	    out.write(0xFE);
-	    out.flush();
-
-	    long time = new Date().getTime();
-
-	    // System.out.print("w");
-	    DataInputStream in = new DataInputStream(sk.getInputStream());
-	    // System.out.print("-in-");
-
-	    String s = in.readLine();
-	    // System.out.println("r - "+(new Date().getTime() - time)+"ms");
-
-	    String s1 = "";
-	    for (int a = 0; a < s.length(); a += 2) {
-		s1 = s1 + s.charAt(a);
+	    serverPing.setAddress(ip);
+	    serverPing.setPort(port);
+	    serverPing.setTimeout(4000);
+	    if (serverPing.fetchData()) {
+		playerCount = serverPing.getPlayersOnline();
+		maxCount = serverPing.getMaxPlayers();
 	    }
-	    String[] s2 = s1.split("§");
 
-	    sk.close();
-	    // System.out.println(s2.toString() + s2.length);
-	    return new int[] { Integer.parseInt(s2[s2.length - 2]),
-		    Integer.parseInt(s2[s2.length - 1]) };
+	    return new int[] { playerCount, maxCount };
 
 	} catch (Exception e) {
 
-	    // e.printStackTrace();
+//	    e.printStackTrace();
 	    return new int[] { -1, -1 };
 	} finally {
 
 	}
     }
 
-    public static int[] udpping(String ip, int port) {
-
-	try {
-
-	    MCQuery mcQuery = new MCQuery(ip, port);
-	    QueryResponse response = mcQuery.basicStat();
-
-	    return new int[] { response.getOnlinePlayers(),
-		    response.getMaxPlayers() };
-
-	} catch (Exception e) {
-
-	    // e.printStackTrace();
-	    return new int[] { -1, -1 };
-	} finally {
-
-	}
-
-    }
 }
