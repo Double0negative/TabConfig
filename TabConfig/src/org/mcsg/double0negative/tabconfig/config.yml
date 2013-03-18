@@ -17,7 +17,7 @@ updateAllOnPlayerLogout: true
 
 #Change the update time in ticks. Higher update times 
 #will result in more data usage. Setting this to -1
-#will disable continous updates. 
+#will disable continuous updates. 
 
 updateTimer: 100
 
@@ -38,6 +38,7 @@ updateTimer: 100
 #
 # Variables: 
 # {online}      = players online
+# {onlineworld!worldname} = players online in world worldname
 # {max}         = max players online
 # {player}      = player name
 # {displayname} = player display name (what shows up in chat)
@@ -49,9 +50,9 @@ updateTimer: 100
 # {ping!serverip.com!online} = Pings an external server for online players
 # {ping!serverip.com!max}    = Pings an external server for max players
 #
-# NOTES: Max char lenght per slot is 16 characters. no two tabs can be identical.
+# NOTES: Max char length per slot is 16 characters. no two tabs can be identical.
 #        If your tab is 14 char or less long a unique char sequence will be added 
-#        to the end of the tab making it unique.
+#        to the end of the tab making it unique.  
 #
 #
 #
