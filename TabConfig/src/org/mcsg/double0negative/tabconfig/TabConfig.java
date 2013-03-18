@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,9 +33,20 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor{
 	private boolean updateAllOnPlayerLogin = false;;
 	private boolean updateAllOnPlayerLogout = false;
 	private int updateTimer = -1;
-	
+        private int updateTimerTask = 0;
+        private BukkitTask pingTimerTask;	
 	private HashMap<String, int[]>ping = new HashMap<String, int[]>();
 
+        public void onDisable() {
+
+                if (updateTimerTask > 0) {
+                         Bukkit.getScheduler().cancelTask(updateTimerTask);
+                }
+
+                pingTimerTask.cancel();
+
+        }
+  
 	public void onEnable(){
 
 		File y = this.getDataFolder();
@@ -63,7 +75,7 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor{
 		System.out.println("[TabConfig] Loaded!");
 
 		if(updateTimer != -1){
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+		updateTimerTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 				public void run(){
 					updateAll();
 				}
@@ -105,7 +117,7 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor{
 		
 		
 		if(ping.size() > 0){
-			Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable(){
+		pingTimerTask =	Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable(){
 				public void run(){
 					for(String s: ping.keySet()){
 						String full = (s.contains(":"))?s:s+":25565";
@@ -152,6 +164,7 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor{
     }
 
 	public String replaceVars(String s, Player p){
+	    try {
 		String r = s;
 
 		r = r.replace("{online}", Bukkit.getOnlinePlayers().length+"");
@@ -187,9 +200,36 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor{
 			
 		}
 		
+		int d = 0;
+		while((d=r.indexOf("{worldonline",d)) != -1) {
+		    int v = r.indexOf("}", d);
+		    String t = r.substring(d, v);
+		    String[] spl = t.split("!");
+		    String sy = "";
+		       
+		    for (World world : Bukkit.getWorlds()) {
+			
+			if (world.getName().equalsIgnoreCase(spl[1])) {
+			    sy = String.valueOf(Bukkit.getWorld(spl[1]).getPlayers().size());
+			}
+			
+		    }
+		    
+		    if (sy.equals("")) {
+			sy = "-1";
+		    }
+		    
+		    r = r.substring(0,d) + sy + r.substring(v+1);
+		    
+		    d = d + sy.length();
+		    
+		}
 		
 		return r;
-
+	    } catch (Exception e) {
+		e.printStackTrace();
+		return null;
+	    }
 	}
 
 	public void updateAll(){

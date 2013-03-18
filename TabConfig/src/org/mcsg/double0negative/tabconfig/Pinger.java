@@ -1,52 +1,33 @@
 package org.mcsg.double0negative.tabconfig;
 
-import java.io.DataInputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.Date;
-
 public class Pinger {
 
+    public static int[] ping(String ip, int port) {
 
-	@SuppressWarnings("deprecation")
-	public static int []  ping(String ip, int port){
+	try {
 
+	    int playerCount = -1;
+	    int maxCount = -1;
 
-		try{
-			Socket sk = new Socket(ip,port);
+	    MC14Fetch serverPing = new MC14Fetch();
 
-			OutputStream out = sk.getOutputStream();
+	    serverPing.setAddress(ip);
+	    serverPing.setPort(port);
+	    serverPing.setTimeout(4000);
+	    if (serverPing.fetchData()) {
+		playerCount = serverPing.getPlayersOnline();
+		maxCount = serverPing.getMaxPlayers();
+	    }
 
-			out.write(0xFE);
-			out.flush();
-			
-			long time = new Date().getTime();
-			
-			//System.out.print("w");
-			DataInputStream in = new DataInputStream(sk.getInputStream());
-			//System.out.print("-in-");
+	    return new int[] { playerCount, maxCount };
 
-			String s = in.readLine();
-		//	System.out.println("r - "+(new Date().getTime() - time)+"ms");
+	} catch (Exception e) {
 
-			String s1 = "";
-			for(int a = 0; a<s.length();a+=2){
-				s1 = s1 + s.charAt(a);
-			}
-			String[] s2 = s1.split("§");
+//	    e.printStackTrace();
+	    return new int[] { -1, -1 };
+	} finally {
 
-			sk.close();
-			//System.out.println(s2.toString() + s2.length);
-			return new int [] {Integer.parseInt(s2[s2.length-2]), Integer.parseInt(s2[s2.length-1])};
-
-		}
-		catch(Exception e){
-			
-			//e.printStackTrace();
-			return new int []{-1,-1};
-		}
-		finally{
-			
-		}
 	}
+    }
+
 }
