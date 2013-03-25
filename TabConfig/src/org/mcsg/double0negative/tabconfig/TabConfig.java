@@ -226,7 +226,7 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor{
 
 	private void fillPlayers(Player p, int a, int b) {
 		for(Player pl:Bukkit.getOnlinePlayers()){
-			TabAPI.setTabString(this, pl, a, b, p.getName()+ ((p.getName().length() < 15) ? TabAPI.nextNull(): ""));
+			TabAPI.setTabString(this, p, a, b, pl.getName()+ ((pl.getName().length() < 15) ? TabAPI.nextNull(): ""));
 
 			b++;
 			if(b == 3){
