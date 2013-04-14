@@ -1,52 +1,63 @@
 package org.mcsg.double0negative.tabconfig;
 
 import java.io.DataInputStream;
-import java.io.OutputStream;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Date;
 
 public class Pinger {
+    public static int []  ping(String ip, int port) {
+	try {
+	    Socket sock = new Socket(ip, port);
+	    DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+	    DataInputStream in = new DataInputStream(sock.getInputStream());
+	    InputStreamReader inputStreamReader = new InputStreamReader(in);
 
+	    out.write(0xFE);
 
-	@SuppressWarnings("deprecation")
-	public static int []  ping(String ip, int port){
+	    // get the length
+	    int length = inputStreamReader.read();
+	    char[] chars = new char[length];
+	    inputStreamReader.read(chars,0,length);
+	    String message = new String(chars);
 
-
-		try{
-			Socket sk = new Socket(ip,port);
-
-			OutputStream out = sk.getOutputStream();
-
-			out.write(0xFE);
-			out.flush();
-			
-			long time = new Date().getTime();
-			
-			//System.out.print("w");
-			DataInputStream in = new DataInputStream(sk.getInputStream());
-			//System.out.print("-in-");
-
-			String s = in.readLine();
-		//	System.out.println("r - "+(new Date().getTime() - time)+"ms");
-
-			String s1 = "";
-			for(int a = 0; a<s.length();a+=2){
-				s1 = s1 + s.charAt(a);
-			}
-			String[] s2 = s1.split("§");
-
-			sk.close();
-			//System.out.println(s2.toString() + s2.length);
-			return new int [] {Integer.parseInt(s2[s2.length-2]), Integer.parseInt(s2[s2.length-1])};
-
-		}
-		catch(Exception e){
-			
-			//e.printStackTrace();
-			return new int []{-1,-1};
-		}
-		finally{
-			
-		}
+	    String[] arguments = message.split("\0\0\0");
+	    arguments = stripEmtpyOff(arguments);
+	    String maxPlayersRaw = arguments[arguments.length - 1];
+	    String onlinePlayersRaw = arguments[arguments.length - 2];
+	    String temp = getContent(onlinePlayersRaw);
+	    int onlinePlayers = Integer.parseInt(temp);
+	    temp = getContent(maxPlayersRaw);
+	    int maxPlayers = Integer.parseInt(temp);
+	    out.close();
+	    in.close();
+	    sock.close();
+	    return new int[] {onlinePlayers, maxPlayers};
+	} catch (Exception e) {
+	    return new int[] {-1, -1};
 	}
+    }
+
+    private static String[] stripEmtpyOff(String[] arguments) {
+	int i = 0;
+	for (String s : arguments) {
+	    if (s == null || s.equalsIgnoreCase("\0") || s.equalsIgnoreCase("") || s.equalsIgnoreCase("\0\0")) {
+		i++;
+	    }
+	}
+	String[] temp = new String[arguments.length - i];
+	for (int x = 0; x < temp.length; x++) {
+	    temp[x] = arguments[x];
+	}
+	return temp;
+    }
+
+    private static String getContent(String input) {
+	String[] tempArray = input.split("\0");
+	String temp = "";
+	for (String s : tempArray) {
+	    temp += s;
+	}
+	return temp;
+    }
 }
