@@ -1,3 +1,4 @@
+####################################
 #             TabConfig            #
 #       Simple config based        #
 #      custom tab list for the     #
@@ -5,19 +6,19 @@
 #                                  #
 #          Double0negative         #
 #         http://mc-sg.org         #
+####################################
 
-
-#Do we want to update the tab list for everyone
-#on login and logout? On large servers with constant
-#logins and logouts this can cause high datausage and
-#cpu load.
+# Do we want to update the tab list for everyone
+# on login and logout? On large servers with constant
+# logins and logouts this can cause high data usage and
+# cpu load.
 
 updateAllOnPlayerLogin: true
 updateAllOnPlayerLogout: true
 
-#Change the update time in ticks. Higher update times 
-#will result in more data usage. Setting this to -1
-#will disable continous updates. 
+# Change the update time in ticks. Higher update times 
+# will result in more data usage. Setting this to -1
+# will disable continuous updates. 
 
 updateTimer: 100
 
