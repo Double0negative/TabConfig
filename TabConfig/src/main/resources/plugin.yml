@@ -1,0 +1,11 @@
+name: TabConfig
+main: org.mcsg.double0negative.tabconfig.TabConfig
+version: 1
+authors: [Double0negative, MCSG]
+depend: [TabAPI]
+
+commands:
+  tabapi:
+    description: tabconfig
+    usage: /tabconfig
+    aliases: [tabconfig]
