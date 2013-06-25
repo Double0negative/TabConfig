@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>org.mcsg.double0negative</groupId>
 			<artifactId>tabapi</artifactId>
-			<version>B 0.1.15</version>
+			<version>B%200.1.15</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
