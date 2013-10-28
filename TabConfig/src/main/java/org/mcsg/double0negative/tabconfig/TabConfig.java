@@ -111,7 +111,12 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor{
 						String full = (s.contains(":"))?s:s+":25565";
 						String[] ip = full.split(":");
 						
-						ping.put(s, Pinger.ping(ip[0],Integer.parseInt(ip[1])));
+						try {
+						    ping.put(s, Pinger.ping(ip[0],Integer.parseInt(ip[1])));
+						} catch (NumberFormatException
+							| IOException exception) {
+						    exception.printStackTrace();
+						}
 						
 						
 					}
