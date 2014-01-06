@@ -238,7 +238,7 @@ public class TabConfig extends JavaPlugin implements Listener, CommandExecutor{
 				b = 0; 
 				a++;
 			}
-			if(a > TabAPI.getVertSize()){
+			if(a > TabAPI.getVertSize() - 1){
 				return;
 			}
 
